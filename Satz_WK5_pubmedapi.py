@@ -9,7 +9,7 @@ from Bio import Entrez
 from Bio import Medline
 import re
 
-MAX_COUNT = 1700
+MAX_COUNT = 17
 TERM = 'Crispr editing'
 
 print('Getting {0} publications containing {1}...'.format(MAX_COUNT, TERM))
@@ -24,6 +24,8 @@ records = Medline.parse(h)
 pubs = []
 perm = []
 
+## Acquire Author and Affiliation Data for each record
+
 for record in records:
     perm.append(record) 
     auth = []
@@ -34,7 +36,8 @@ for record in records:
     d = record.get('EDAT', '?')
     pubs.append([auth, af, d])
     
-    
+
+#Assign Authors to each other (source-targets)  
 audict = {}
 for x in pubs:
     x = x[0]
@@ -48,7 +51,7 @@ for x in pubs:
 
 
          
-                
+##Assign affiliations to each author                
 auaffil = {}
 count = 0
 bad = 0
@@ -91,6 +94,7 @@ for k,v in audict.iteritems():
 f.close() # you can omit in most cases as the destructor will call it
 
 
+##in final, assign each author to USA or not.
 def hasUSA(line):
     line = line.lower()
     if 'usa' in line:
